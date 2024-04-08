@@ -3,16 +3,19 @@ import "tailwindcss/tailwind.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home";
-import UserProfile from "./pages/UserProfile";
+import { SelectedUserProvider } from "./services/context/SelectedUserContext";
+import UserProfile from "./components/UserProfile";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="profile/:uuid" element={<UserProfile />} />
-      </Routes>
-    </BrowserRouter>
+    <SelectedUserProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="user/:uuid" element={<UserProfile />} />
+        </Routes>
+      </BrowserRouter>
+    </SelectedUserProvider>
   );
 }
 

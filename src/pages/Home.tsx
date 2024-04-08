@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
-import {
-  SelectedUserProvider,
-  useSelectedUser,
-} from "../services/context/SelectedUserContext";
 
 import Button from "../components/ui/Button";
-import UserProfile from "./UserProfile";
+import UserProfile from "../components/UserProfile";
 import { UserProfileInfo } from "../services/utils/types";
 import { fetchUsers } from "../services/api/api";
-import { useNavigate } from "react-router-dom";
+import { useSelectedUser } from "../services/context/SelectedUserContext";
 
 const Home: React.FC = () => {
   const [users, setUsers] = useState<UserProfileInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [loading, setLoading] = useState(false);
   const { setSelectedUser } = useSelectedUser();
 
-  const navigate = useNavigate();
-
   const handleClickUser = (user: UserProfileInfo) => {
+    setLoading(true);
+    console.log("Selected User:", user);
     setSelectedUser(user);
-    navigate(`/profile/${user.login.uuid}`);
-    console.log("cliquei");
+
+    setLoading(false);
   };
 
   const usersPerPage = 20;
@@ -67,39 +63,39 @@ const Home: React.FC = () => {
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
   return (
-    <SelectedUserProvider>
-      <div className="flex w-full h-full bg-gray-100 ">
-        <div className="w-1/5">
-          <div className="w-full h-full">
-            <div className="flex flex-col bg-white h-full p-6 justify-between">
-              <div className="">Search</div>
-              <ul>
-                {currentUsers.map((user, index) => (
-                  <li
-                    key={index}
-                    className="cursor-pointer"
-                    onClick={() => handleClickUser(user)}
-                  >
-                    <span className="text-lg">
-                      {user.name.first} {user.name.last}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <div className="flex w-full justify-between">
-                {currentPage > 1 && (
-                  <Button onClick={handlePrevPage} label="Back" />
-                )}
-                {currentPage < totalPages && (
-                  <Button onClick={handleNextPage} label="Next" />
-                )}
-              </div>
+    <div className="flex w-full h-full bg-gray-100 ">
+      <div className="w-1/5">
+        <div className="w-full h-full">
+          <div className="flex flex-col bg-white h-full p-6 justify-between">
+            <div className="">Search</div>
+            <ul>
+              {currentUsers.map((user, index) => (
+                <li
+                  key={index}
+                  className="cursor-pointer"
+                  onClick={() => handleClickUser(user)}
+                >
+                  <span className="text-lg">
+                    {user.name.first} {user.name.last}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex w-full justify-between">
+              {currentPage > 1 && (
+                <Button onClick={handlePrevPage} label="Back" />
+              )}
+              {currentPage < totalPages && (
+                <Button onClick={handleNextPage} label="Next" />
+              )}
             </div>
           </div>
         </div>
-        <UserProfile />
       </div>
-    </SelectedUserProvider>
+      <div className="w-4/5">
+        {loading ? <div>Loading...</div> : <UserProfile />}
+      </div>
+    </div>
   );
 };
 
