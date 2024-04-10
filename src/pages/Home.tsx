@@ -85,7 +85,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex w-full h-full bg-gray-100 ">
+    <div className="flex w-full h-full bg-light-gray ">
       <div className="w-128">
         <div className="w-full h-full">
           <div className="flex flex-col bg-white h-full p-6 justify-between">

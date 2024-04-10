@@ -5,7 +5,7 @@ type TextProps = {
   children: React.ReactNode;
 };
 
-const Text: React.FC<TextProps> = ({ className = "", children }) => {
+const Text: React.FC<TextProps> = ({ className = "text-dark", children }) => {
   return <span className={className}>{children}</span>;
 };
 
