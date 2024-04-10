@@ -23,7 +23,7 @@ const UserProfile: React.FC = () => {
   if (loading) {
     return (
       <div className="flex h-screen w-full items-center justify-center content-center">
-        Selecione um usuário
+        <Text className="text-3xl"> Select a user :D</Text>
       </div>
     );
   }
