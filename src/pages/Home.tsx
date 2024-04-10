@@ -1,28 +1,21 @@
 import React, { useEffect, useState } from "react";
 
 import Button from "../components/ui/Button";
+import SearchBar from "../components/SearchBar";
 import UserProfile from "../components/UserProfile";
 import { UserProfileInfo } from "../services/utils/types";
 import { fetchUsers } from "../services/api/api";
+import { useNavigate } from "react-router-dom";
 import { useSelectedUser } from "../services/context/SelectedUserContext";
 
 const Home: React.FC = () => {
   const [users, setUsers] = useState<UserProfileInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [originalUsers, setOriginalUsers] = useState<UserProfileInfo[]>([]);
+
+  const navigate = useNavigate();
+
   const { setSelectedUser } = useSelectedUser();
-
-  const handleClickUser = (user: UserProfileInfo) => {
-    setLoading(true);
-    console.log("Selected User:", user);
-    setSelectedUser(user);
-
-    setLoading(false);
-  };
-
-  const usersPerPage = 20;
-
-  const totalPages = Math.ceil(users.length / usersPerPage);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,11 +23,13 @@ const Home: React.FC = () => {
         const cachedUsers = localStorage.getItem("cachedUsers");
 
         if (cachedUsers) {
-          setUsers(JSON.parse(cachedUsers));
+          const parsedUsers = JSON.parse(cachedUsers);
+          setUsers(parsedUsers);
+          setOriginalUsers(parsedUsers);
         } else {
           const response = await fetchUsers(100);
           setUsers(response);
-
+          setOriginalUsers(response);
           // caching on localstorage
           localStorage.setItem("cachedUsers", JSON.stringify(response));
         }
@@ -44,7 +39,6 @@ const Home: React.FC = () => {
     };
     fetchData();
   }, []);
-  console.log(users);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -58,16 +52,41 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleSearch = (searchTerm: string) => {
+    const filteredUsers = originalUsers.filter((user) =>
+      `${user.name.first} ${user.name.last}`
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    );
+
+    const noResultsFound = filteredUsers.length === 0;
+
+    setUsers(filteredUsers);
+    return noResultsFound;
+  };
+
+  const usersPerPage = 20;
+  const totalPages = Math.ceil(users.length / usersPerPage);
+
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
+  const handleClickUser = (user: UserProfileInfo) => {
+    console.log(user);
+    navigate(`/profile/${user.login.uuid}`, {
+      preventScrollReset: true,
+      state: { user },
+    });
+    setSelectedUser(user);
+  };
+
   return (
     <div className="flex w-full h-full bg-gray-100 ">
-      <div className="w-1/5">
+      <div className="w-128">
         <div className="w-full h-full">
           <div className="flex flex-col bg-white h-full p-6 justify-between">
-            <div className="">Search</div>
+            <SearchBar onSearch={handleSearch} />
             <ul>
               {currentUsers.map((user, index) => (
                 <li
@@ -92,9 +111,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="w-4/5">
-        {loading ? <div>Loading...</div> : <UserProfile />}
-      </div>
+      <UserProfile />
     </div>
   );
 };

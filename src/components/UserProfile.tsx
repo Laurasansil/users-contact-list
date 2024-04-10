@@ -12,13 +12,17 @@ const UserProfile: React.FC = () => {
   const loading = !selectedUser;
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-screen w-full items-center justify-center content-center">
+        Selecione um usuario
+      </div>
+    );
   }
 
   return (
     <SelectedUserProvider>
-      <div className="flex justify-center content-center h-full">
-        <div className="bg-blue-600">
+      <div className="flex w-full h-full items-center justify-center content-center">
+        <div className="flex bg-light-gray h-full w-full items-center justify-center content-center">
           <h2>User Profile</h2>
           <div>
             Name: {selectedUser.name.first} {selectedUser.name.last}

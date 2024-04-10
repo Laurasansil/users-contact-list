@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home";
 import { SelectedUserProvider } from "./services/context/SelectedUserContext";
-import UserProfile from "./components/UserProfile";
 
 function App() {
   return (
@@ -12,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="user/:uuid" element={<UserProfile />} />
+          <Route path="/profile/:uuid" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </SelectedUserProvider>
