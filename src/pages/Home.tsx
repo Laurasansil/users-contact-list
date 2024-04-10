@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
 import Button from "../components/ui/Button";
+import Icon from "../components/ui/Icon";
 import SearchBar from "../components/SearchBar";
+import Text from "../components/ui/Text";
 import UserProfile from "../components/UserProfile";
 import { UserProfileInfo } from "../services/utils/types";
 import { fetchUsers } from "../services/api/api";
@@ -12,7 +14,7 @@ const Home: React.FC = () => {
   const [users, setUsers] = useState<UserProfileInfo[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [originalUsers, setOriginalUsers] = useState<UserProfileInfo[]>([]);
-
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const { setSelectedUser } = useSelectedUser();
@@ -79,6 +81,7 @@ const Home: React.FC = () => {
       state: { user },
     });
     setSelectedUser(user);
+    setSelectedUserId(user.login.uuid);
   };
 
   return (
@@ -94,18 +97,37 @@ const Home: React.FC = () => {
                   className="cursor-pointer"
                   onClick={() => handleClickUser(user)}
                 >
-                  <span className="text-lg">
-                    {user.name.first} {user.name.last}
-                  </span>
+                  <div
+                    className={`flex items-center text-lg mb-2 rounded-lg  ${
+                      user.login.uuid === selectedUserId
+                        ? "bg-light-gray p-1"
+                        : ""
+                    }`}
+                  >
+                    <img
+                      className="rounded-full w-8 h-8 ml-2"
+                      src={user.picture.thumbnail}
+                      alt={`Profile picture `}
+                    />
+
+                    <Text className="ml-3 flex-grow text-dark font-medium">
+                      {user.name.first} {user.name.last}
+                    </Text>
+
+                    <Icon
+                      src={`https://flagsapi.com/${user.nat}/shiny/64.png`}
+                      alt={`Small icon representing users naturalitie from ${user.nat}`}
+                    />
+                  </div>
                 </li>
               ))}
             </ul>
             <div className="flex w-full justify-between">
               {currentPage > 1 && (
-                <Button onClick={handlePrevPage} label="Back" />
+                <Button onClick={handlePrevPage} label="BACK" />
               )}
               {currentPage < totalPages && (
-                <Button onClick={handleNextPage} label="Next" />
+                <Button onClick={handleNextPage} label="NEXT" />
               )}
             </div>
           </div>

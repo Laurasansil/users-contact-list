@@ -29,8 +29,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   return (
     <div className="search-bar">
       <input
+        className="border-solid border-2 border-medium-gray  bg-light-gray rounded-lg w-full p-1 cursor-pointer"
         type="text"
-        placeholder="Search users..."
+        placeholder=" Search "
         value={searchTerm}
         onChange={handleChange}
         onKeyDown={(e) => {
