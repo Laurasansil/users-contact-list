@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type SecondaryTextProps = {
   className?: string;
@@ -6,7 +6,7 @@ type SecondaryTextProps = {
 };
 
 const SecondaryText: React.FC<SecondaryTextProps> = ({
-  className = "text-darkest-gray",
+  className = 'text-darkest-gray',
   children,
 }) => {
   return <span className={className}>{children}</span>;
