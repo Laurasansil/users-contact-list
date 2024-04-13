@@ -1,4 +1,4 @@
-type LocationInfo = {
+type Location = {
   city: string;
   country: string;
   postcode: number;
@@ -7,7 +7,11 @@ type LocationInfo = {
   street: { name: string; number: number };
 };
 
-export type UserProfileInfo = {
+export type GetUserRes = {
+  results: User[];
+};
+
+export type User = {
   cell: string;
   phone: string;
   name: {
@@ -23,7 +27,7 @@ export type UserProfileInfo = {
     date: string;
   };
   id: { value: string };
-  location: LocationInfo;
+  location: Location;
   picture: {
     large: string;
     medium: string;

@@ -1,20 +1,39 @@
-import "tailwindcss/tailwind.css";
+import 'tailwindcss/tailwind.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Home } from '@/modules/home';
+import { Profile, NoUserSelected } from '@/modules/profile';
+import { SelectedUserProvider } from '@/modules/user';
+import { ROUTES } from './constants';
 
-import Home from "./pages/Home";
-import { SelectedUserProvider } from "./services/context/SelectedUserContext";
+const queryClient = new QueryClient();
+
+const router = createBrowserRouter([
+  {
+    path: ROUTES.HOME,
+    element: <Home />,
+    // Note: profile is a nested route
+    children: [
+      {
+        path: ROUTES.HOME,
+        element: <NoUserSelected />,
+      },
+      {
+        path: ROUTES.PROFILE,
+        element: <Profile />,
+      },
+    ],
+  },
+]);
 
 function App() {
   return (
-    <SelectedUserProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/profile/:uuid" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
-    </SelectedUserProvider>
+    <QueryClientProvider client={queryClient}>
+      <SelectedUserProvider>
+        <RouterProvider router={router} />
+      </SelectedUserProvider>
+    </QueryClientProvider>
   );
 }
 
